@@ -1,5 +1,5 @@
 # Spring-Rest-API
-## The Lecture I am Studing..
+## The Lecture I am Studying..
 - https://www.inflearn.com/course/spring_rest-api/
 
 ## The note I wrote

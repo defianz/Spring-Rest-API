@@ -1,8 +1,10 @@
 package me.defian.demoinflearnrestapi.events;
 
 
+import me.defian.demoinflearnrestapi.common.ErrorsResource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +38,11 @@ public class EventController {
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Validated EventDto eventDto, Errors errors){
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(new ErrorsResource(errors));
         }
         eventValidator.validate(eventDto,errors);
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(new ErrorsResource(errors));
         }
 
         Event event = modelMapper.map(eventDto, Event.class);
@@ -52,6 +54,7 @@ public class EventController {
         EventResource eventResource = new EventResource(event);
         eventResource.add(linkTo(EventController.class).withRel("query-events"));
         eventResource.add(selfLinkBuilder.withRel("update-event"));
+        eventResource.add(new Link("/docs/index.html#resources-events-create").withRel("profile"));
         return ResponseEntity.created(createUri).body(eventResource);
     }
 }

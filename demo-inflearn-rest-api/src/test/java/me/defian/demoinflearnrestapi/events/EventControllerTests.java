@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(value = RestDocsConfiguration.class)
+@ActiveProfiles(value = "test")
 public class EventControllerTests {
 
     @Autowired
@@ -84,14 +86,16 @@ public class EventControllerTests {
                 .andExpect(jsonPath("free").value((false)))
                 .andExpect(jsonPath("offline").value(true))
                 .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
-                .andExpect(jsonPath("_links.self").exists())
-                .andExpect(jsonPath("_links.query-events").exists())
-                .andExpect(jsonPath("_links.update-event").exists())
+//                .andExpect(jsonPath("_links.self").exists())
+//                .andExpect(jsonPath("_links.query-events").exists())
+//                .andExpect(jsonPath("_links.update-event").exists())
+//                .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("create-event",
                         links(
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("query-events").description("lint to query event"),
-                                linkWithRel("update-event").description("link to update event")
+                                linkWithRel("update-event").description("link to update event"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -130,7 +134,8 @@ public class EventControllerTests {
                                 fieldWithPath("eventStatus").description("eventStatus of new Event"),
                                 fieldWithPath("_links.self.href").description("response header link self"),
                                 fieldWithPath("_links.query-events.href").description("response header link query events"),
-                                fieldWithPath("_links.update-event.href").description("response header link update event")
+                                fieldWithPath("_links.update-event.href").description("response header link update event"),
+                                fieldWithPath("_links.profile.href").description("response header link profile")
                         )
                         ));
         ;
@@ -205,9 +210,10 @@ public class EventControllerTests {
         )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$[0].objectName").exists())
-                .andExpect(jsonPath("$[0].defaultMessage").exists())
-                .andExpect(jsonPath("$[0].code").exists())
+                .andExpect(jsonPath("errors[0].objectName").exists())
+                .andExpect(jsonPath("errors[0].defaultMessage").exists())
+                .andExpect(jsonPath("errors[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists())
 
         ;
     }

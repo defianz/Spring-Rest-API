@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.defian.demoinflearnrestapi.common.TestDescription;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,10 +21,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,9 +49,9 @@ public class EventControllerTests {
                 .name("Spring")
                 .description("REST API Development with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2021, 8, 3, 11, 36))
-                .closeEnrollmentDateTime(LocalDateTime.of(2021, 8, 4, 12, 00))
-                .beginEventDateTime(LocalDateTime.of(2021, 8, 3, 12, 00))
-                .endEventDateTime(LocalDateTime.of(2021, 8, 3, 14, 00))
+                .closeEnrollmentDateTime(LocalDateTime.of(2021, 8, 3, 12, 00))
+                .beginEventDateTime(LocalDateTime.of(2021, 8, 4, 12, 00))
+                .endEventDateTime(LocalDateTime.of(2021, 8, 4, 14, 00))
                 .basePrice(100)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
@@ -66,9 +71,12 @@ public class EventControllerTests {
                 .andExpect(jsonPath("id").exists())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonPath("id").value(Matchers.not(100)))
-                .andExpect(jsonPath("free").value(Matchers.not(true)))
-                .andExpect(jsonPath("eventStatus").value("DRAFT"))
+                .andExpect(jsonPath("free").value((false)))
+                .andExpect(jsonPath("offline").value(true))
+                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.query-events").exists())
+                .andExpect(jsonPath("_links.update-event").exists())
         ;
     }
 
@@ -147,4 +155,57 @@ public class EventControllerTests {
 
         ;
     }
+
+    @ParameterizedTest
+    @MethodSource("paramsForTestFree")
+    public void testFree(int basePrice, int maxPrice, boolean isFree){
+        // Given
+        Event event = Event.builder()
+                .basePrice(basePrice)
+                .maxPrice(maxPrice)
+                .build();
+
+        // When
+        event.update();
+
+
+        // Then
+        assertTrue(event.isFree() == isFree);
+    }
+
+    @ParameterizedTest
+    @MethodSource("paramForTestOffline")
+    public void testOffline(String location, boolean isOffline){
+
+        // Given
+        Event event = Event.builder()
+                .location(location)
+                .build();
+        // When
+        event.update();
+
+        // Then
+        assertTrue(event.isOffline() == isOffline);
+
+    }
+
+    private static Stream<Arguments> paramForTestOffline() { // argument source method
+        return Stream.of(
+                Arguments.of("강남", true),
+                Arguments.of(null, false),
+                Arguments.of("        ", false)
+        );
+    }
+
+    private static Stream<Arguments> paramsForTestFree() { // argument source method
+        return Stream.of(
+                Arguments.of(0,0, true),
+                Arguments.of(100, 0, false),
+                Arguments.of(0, 100, false),
+                Arguments.of(100, 200, false)
+        );
+    }
+
+
+
 }

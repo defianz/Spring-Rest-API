@@ -118,11 +118,6 @@ public class EventControllerTests {
                 .andExpect(status().isBadRequest());
     }
 
-    /**
-     *
-     * @throws Exception
-     */
-
     @Test
     @TestDescription("입력 값이 잘못된 경우에 에러를 발생하는 테스트")
     public void createEvent_Bad_request_Wrong_Input() throws Exception {
@@ -144,6 +139,12 @@ public class EventControllerTests {
                 .accept(MediaTypes.HAL_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(eventDto))
         )
-                .andExpect(status().isBadRequest());
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].objectName").exists())
+                .andExpect(jsonPath("$[0].defaultMessage").exists())
+                .andExpect(jsonPath("$[0].code").exists())
+
+        ;
     }
 }

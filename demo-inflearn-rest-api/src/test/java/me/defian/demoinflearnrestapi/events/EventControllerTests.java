@@ -2,6 +2,7 @@ package me.defian.demoinflearnrestapi.events;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.defian.demoinflearnrestapi.common.BaseControllerTest;
 import me.defian.demoinflearnrestapi.common.RestDocsConfiguration;
 import me.defian.demoinflearnrestapi.common.TestDescription;
 import org.hamcrest.Matchers;
@@ -39,27 +40,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs
-@Import(value = RestDocsConfiguration.class)
-@ActiveProfiles(value = "test")
-public class EventControllerTests {
 
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
+public class EventControllerTests extends BaseControllerTest {
 
 //    @MockBean
 //    EventRepository eventRepository;
 
     @Autowired
     EventRepository eventRepository;
-
-    @Autowired
-    ModelMapper modelMapper;
 
     @Test
     @TestDescription("정상적으로 이벤트를 생성하는 테스트")

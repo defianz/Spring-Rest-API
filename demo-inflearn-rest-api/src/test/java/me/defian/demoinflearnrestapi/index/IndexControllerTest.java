@@ -1,6 +1,7 @@
 package me.defian.demoinflearnrestapi.index;
 
 
+import me.defian.demoinflearnrestapi.common.BaseControllerTest;
 import me.defian.demoinflearnrestapi.common.RestDocsConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+//
+//@SpringBootTest
+//@AutoConfigureMockMvc
+//@AutoConfigureRestDocs
+//@Import(value = RestDocsConfiguration.class)
+//@ActiveProfiles(value = "test")
+public class IndexControllerTest extends BaseControllerTest {
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs
-@Import(value = RestDocsConfiguration.class)
-@ActiveProfiles(value = "test")
-public class IndexControllerTest {
-
-    @Autowired
-    MockMvc mockMvc;
+//    @Autowired
+//    MockMvc mockMvc;
 
     @Test
     public void index() throws Exception {

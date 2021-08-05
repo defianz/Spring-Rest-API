@@ -17,11 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
-//@SpringBootTest
-//@AutoConfigureMockMvc
-//@AutoConfigureRestDocs
-//@Import(value = RestDocsConfiguration.class)
-//@ActiveProfiles(value = "test")
+
 public class IndexControllerTest extends BaseControllerTest {
 
 //    @Autowired

@@ -3,6 +3,7 @@ package me.defian.demoinflearnrestapi.configs;
 import me.defian.demoinflearnrestapi.accounts.Account;
 import me.defian.demoinflearnrestapi.accounts.AccountRole;
 import me.defian.demoinflearnrestapi.accounts.AccountService;
+import me.defian.demoinflearnrestapi.common.AppProperties;
 import me.defian.demoinflearnrestapi.common.BaseControllerTest;
 import me.defian.demoinflearnrestapi.common.TestDescription;
 import org.junit.jupiter.api.Test;
@@ -22,28 +23,27 @@ class AuthServerConfigTest extends BaseControllerTest {
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    AppProperties appProperties;
+
     @Test
     @TestDescription("인증 토큰을 발급 받는 테스트")
     public void getAuthToken() throws Exception {
 
 
         // Given
-        String password = "defian";
-        String username = "defian@gmail.com";
-        Account defian = Account.builder()
-                .email(username)
-                .password(password)
-                .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
-                .build();
+//        Account defian = Account.builder()
+//                .email(appProperties.getUserUsername())
+//                .password(appProperties.getUserPassword())
+//                .roles(Set.of(AccountRole.USER))
+//                .build();
 //        this.accountService.saveAccount(defian);
 
-        String clientId = "myApp";
-        String clientSecret = "pass";
 
         this.mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(clientId,clientSecret))
-                .param("username",username)
-                .param("password",password)
+                .with(httpBasic(appProperties.getClientId(),appProperties.getClientSecret()))
+                .param("username",appProperties.getUserUsername())
+                .param("password",appProperties.getUserPassword())
                 .param("grant_type","password")
         )
                 .andDo(print())

@@ -6,6 +6,7 @@ import me.defian.demoinflearnrestapi.accounts.AccountService;
 import me.defian.demoinflearnrestapi.common.AppProperties;
 import me.defian.demoinflearnrestapi.common.BaseControllerTest;
 import me.defian.demoinflearnrestapi.common.TestDescription;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,18 +28,8 @@ class AuthServerConfigTest extends BaseControllerTest {
     AppProperties appProperties;
 
     @Test
-    @TestDescription("인증 토큰을 발급 받는 테스트")
+    @DisplayName("인증 토큰을 발급 받는 테스트")
     public void getAuthToken() throws Exception {
-
-
-        // Given
-//        Account defian = Account.builder()
-//                .email(appProperties.getUserUsername())
-//                .password(appProperties.getUserPassword())
-//                .roles(Set.of(AccountRole.USER))
-//                .build();
-//        this.accountService.saveAccount(defian);
-
 
         this.mockMvc.perform(post("/oauth/token")
                 .with(httpBasic(appProperties.getClientId(),appProperties.getClientSecret()))

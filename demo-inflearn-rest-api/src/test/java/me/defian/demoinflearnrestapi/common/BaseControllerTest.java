@@ -2,6 +2,7 @@ package me.defian.demoinflearnrestapi.common;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Ignore;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -16,6 +17,8 @@ import org.springframework.ui.ModelMap;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(value = RestDocsConfiguration.class)
+@ActiveProfiles(value = "test")
+@Ignore
 public class BaseControllerTest {
 
     @Autowired
